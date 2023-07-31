@@ -1,0 +1,31 @@
+import { useState, useCallback } from 'react'
+import { type VectorSearchRequest } from '../app/vector-search/route'
+
+export const useAskAi = () => {
+  const [data, setData] = useState<any[] | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  // should i combine useAskAi and useQuestion hooks?
+
+  const fetchQuestionAnswer = useCallback(async (query: VectorSearchRequest) => {
+    try {
+      setIsLoading(true)
+      const res = await fetch(`http://localhost:3000/vector-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(query),
+      })
+      if (!res.ok) {
+        throw new Error(`${res.status} ${res.statusText}`)
+      }
+      const responseData = await res.json()
+      setData(responseData.data[0])
+    } catch (err: any) {
+      setError(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+  return { data, error, isLoading, fetchQuestionAnswer }
+}
