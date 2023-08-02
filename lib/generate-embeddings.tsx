@@ -5,6 +5,7 @@ import { openaiEmbedding } from './openai-embedding'
 import { randomUUID } from 'crypto'
 import { insertTranscriptSections } from './insertTranscriptSections'
 import { insertTranscript } from './insertTranscript'
+import { openai16k } from './openai-16k'
 
 // fetchSources->indexResource->walk docs->generate docs/mdfiles embeddings->store to supabase
 
@@ -33,7 +34,6 @@ export default async function generateEmbeddings(stock?: string) {
 
   const existingChecksums = existingTranscript?.map((entry) => entry.checksum)
 
-
   for (const source of embeddingSources) {
     const transcriptId = randomUUID()
     const { checksum, sections } = await source.load()
@@ -43,9 +43,32 @@ export default async function generateEmbeddings(stock?: string) {
       console.log('data exists in Supabase, skip to the next !')
       continue
     }
+    const context16k = sections[0].content
+    const questions16k = [
+      `please help me in summarizing the key points from the company's conference call`,
+      `Please help me summarize the main topics of interest raised by analysts during the conference call, along with the corresponding answers, using bullet points.`,
+      `please help me in identifying high-frequency topics, using bullet points`,
+    ]
+
+    const testing16key = await openai16k({ context: context16k, question: questions16k[2] })
+    console.log('find-keyword: ', testing16key)
+    
+    const results16k = await Promise.all(
+      questions16k.map((question) => openai16k({ context: context16k, question }))
+    )
+    const companyKeypoint = results16k[0].openaiAnswer.split('\n').map((word) => word.trim())
+    const analystKeypoint = results16k[1].openaiAnswer.split('\n').map((word) => word.trim())
+    const frequentTopics = results16k[2].openaiAnswer
 
     // table: transcript
-    const supabaseTranscriptTable = insertTranscript(transcriptId, source, sections)
+    const supabaseTranscriptTable = insertTranscript(
+      transcriptId,
+      source,
+      sections,
+      companyKeypoint,
+      analystKeypoint,
+      frequentTopics
+    )
 
     // check sections is 1 object
     console.log('section check:', sections.length)
@@ -54,23 +77,28 @@ export default async function generateEmbeddings(stock?: string) {
     const splitedDocuments = await textSplitter(content)
     console.log(`splitted to ${splitedDocuments.length} documents`)
 
-    const embeddingPromises = splitedDocuments.map((document) =>
-      openaiEmbedding(document.pageContent)
-    )
-    const embeddingResults = await Promise.all(embeddingPromises)
-
-    const supabasePromises = embeddingResults.map((results) =>
-      insertTranscriptSections(
-        transcriptId,
-        source,
-        heading,
-        results.content,
-        results.embeddings,
-        results.tokenUsage
+    try {
+      const embeddingPromises = splitedDocuments.map((document) =>
+        openaiEmbedding(document.pageContent)
       )
-    )
-    const supabaseTranscriptSectionTable = await Promise.all(supabasePromises)
-  }
+      const embeddingResults = await Promise.all(embeddingPromises)
 
+      // Supabase transaction setting
+      const supabasePromises = embeddingResults.map((results) =>
+        insertTranscriptSections(
+          transcriptId,
+          source,
+          heading,
+          results.content,
+          results.embeddings,
+          results.tokenUsage
+        )
+      )
+      const supabaseTranscriptSectionTable = await Promise.all(supabasePromises)
+    } catch (error: any) {
+      throw new Error(error)
+    }
+  
+  }
   // return what value after all for loops has been done? use Promise.all?
 }

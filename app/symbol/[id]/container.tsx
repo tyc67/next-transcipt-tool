@@ -8,7 +8,7 @@ import RealtimePosts from './realtime-posts'
 import TranscriptList from './transcriptslist'
 import { supabaseTranscript } from '@/types/earnings'
 import { useRouter } from 'next/navigation'
-import DefaultQA from './defalutQA'
+import Brief from './Brief'
 import UserAsking from '@/app/symbol/[id]/UserAsking'
 import { useUpdateTranscript } from '@/hooks/useUpdateTranscript'
 
@@ -30,19 +30,22 @@ export default function ContainerTest({
   }
 
   const handleCompare = () => {
-    router.push('/compare')
+    router.push('/symbol/compare')
   }
 
   // do i really need this button function? maybe handle this action in CI/CD phases.
-  const handleCheckingAction = () => {
+  const handleCheckingAction = async () => {
     console.log('checking and up-to-date')
-    updateTranscript(symbol)
-    router.refresh()
+    const response = await updateTranscript(symbol)
+    if (response?.ok) {
+      router.refresh()
+      // how to control only re-render list component?
+    }
   }
 
   return (
     <>
-      <div className="flex h-[100vh] w-full flex-col gap-2 bg-gray-100 p-2 text-slate-600">
+      <main className="flex h-[100vh] w-full flex-col gap-2 bg-gray-100 p-2 text-slate-600">
         <section className="flex flex-1 rounded-md bg-white p-2">
           <span className="flex flex-row items-center">
             <p className="px-4 py-2 text-xl text-slate-900">{symbol}</p>
@@ -76,12 +79,12 @@ export default function ContainerTest({
             <div className=" max-h-[35%] min-h-[35%] overflow-y-auto p-2">
               <UserAsking symbol={symbol} transcriptId={selectedTranscript?.parent_transcript_id} />
             </div>
-            <div className="relative flex w-full cursor-text overflow-y-auto rounded-md bg-slate-50 p-2 outline-none outline outline-2 hover:bg-slate-100">
-              <DefaultQA symbol={symbol} transcriptId={selectedTranscript?.parent_transcript_id} />
+            <div className="relative flex w-full cursor-text flex-col overflow-y-auto rounded-md bg-slate-50 p-2 outline-none outline outline-2 hover:bg-slate-100">
+              <Brief transcriptId={selectedTranscript?.parent_transcript_id} />
             </div>
           </FixedHeightLayout>
         </section>
-      </div>
+      </main>
     </>
   )
 }

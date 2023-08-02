@@ -4,7 +4,10 @@ import { MarkdownSource, Section } from './indexResource'
 export const insertTranscript = async (
   transcriptId: string,
   source: MarkdownSource,
-  sections: Section[]
+  sections: Section[],
+  companyKeypoint: string[],
+  analystKeypoint: string[],
+  frequentTopics: string
 ): Promise<void> => {
   try {
     const { data, error: insertTranscriptError } = await supabase.from('transcript').insert({
@@ -18,6 +21,9 @@ export const insertTranscript = async (
       heading: sections[0].heading,
       company_name: sections[0].heading?.split(',')[0],
       content: sections[0].content,
+      keypoint_company: JSON.stringify(companyKeypoint),
+      keypoint_analyst: JSON.stringify(analystKeypoint),
+      keypoint_topics: frequentTopics,
     })
     if (insertTranscriptError) {
       throw insertTranscriptError
