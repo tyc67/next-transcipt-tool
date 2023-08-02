@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export const useTranscriptList = (id: string) => {
+export const useTranscriptList = (symbol?: string) => {
   const supabase = createClientComponentClient()
 
   const [data, setData] = useState<any[] | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
+  const memoizedData = useMemo(() => data, [data])
+  
   useEffect(() => {
     const fetchTranscriptData = async () => {
       try {
@@ -15,7 +16,7 @@ export const useTranscriptList = (id: string) => {
         const { data: transcriptData, error } = await supabase
           .from('transcript')
           .select()
-          .eq('symbol', id)
+          .eq('symbol', symbol)
 
         setData(transcriptData)
       } catch (err: any) {
@@ -24,8 +25,10 @@ export const useTranscriptList = (id: string) => {
         setIsLoading(false)
       }
     }
-    fetchTranscriptData()
-  }, [id, supabase])
+    if (symbol) {
+      fetchTranscriptData()
+    }
+  }, [symbol, supabase])
 
-  return { data, error, isLoading }
+  return { data: memoizedData, error, isLoading }
 }
