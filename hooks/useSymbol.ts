@@ -10,8 +10,8 @@ export interface Company {
   company_name: string
 }
 
-interface SymbolData {
-  company: Company[]
+type SymbolData = {
+  company: Array<{ symbol: string; company_name: string }>
   hashMap: SymbolMap
 }
 
@@ -28,23 +28,23 @@ export const useSymbol = () => {
         const { data: companyData, error } = await supabase
           .from('transcript')
           .select('symbol,company_name')
-
-        const removedDuplicateData = companyData?.filter((item, index, array) => {
-          return (
-            index ===
-            array.findIndex(
-              (obj) => obj.symbol === item.symbol && obj.company_name === item.company_name
+        if (companyData && companyData.length !== 0) {
+          const removedDuplicateData = companyData?.filter((item, index, array) => {
+            return (
+              index ===
+              array.findIndex(
+                (obj) => obj.symbol === item.symbol && obj.company_name === item.company_name
+              )
             )
-          )
-        })
+          })
 
-        // how to solve undefined problem?
-        const hashMap: SymbolMap = removedDuplicateData?.reduce((acc, item) => {
-          acc[item.symbol] = item.company_name
-          return acc
-        }, {} as SymbolMap)
+          const hashMap: SymbolMap = removedDuplicateData?.reduce((acc, item) => {
+            acc[item.symbol] = item.company_name
+            return acc
+          }, {} as SymbolMap)
 
-        setData({ company: removedDuplicateData, hashMap })
+          setData({ company: removedDuplicateData, hashMap })
+        }
       } catch (err: any) {
         setError(err)
       } finally {
@@ -52,7 +52,7 @@ export const useSymbol = () => {
       }
     }
     fetchSymbolData()
-  }, [supabase])
+  }, [])
 
   return { data, error, isLoading }
 }

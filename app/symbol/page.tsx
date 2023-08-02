@@ -12,13 +12,7 @@ export default function SymbolPage() {
   const [symbolInput, setSymbolInput] = useState<string>('')
   const [searchResult, setSearchResult] = useState<Company[]>([])
   const [isDropDown, setIsDropdown] = useState<boolean>(false)
-  const { data: dbStockData, error, isLoading } = useSymbol()
-  const stockSymbolMap = dbStockData?.hashMap
-
-  const handleSelectChange = (item: string) => {
-    console.log(item)
-    // setSymbolInput(item)
-  }
+  const { data: stockData, error, isLoading } = useSymbol()
 
   const handleSelect = (item: string) => {
     router.push(`/symbol/${item}`)
@@ -32,15 +26,17 @@ export default function SymbolPage() {
     setSymbolInput(transformedQuery)
 
     const results = []
+    const stockSymbolMap = stockData?.hashMap
     for (const symbol in stockSymbolMap) {
       if (symbol.startsWith(transformedQuery)) {
         results.push({ symbol, company_name: stockSymbolMap[symbol] })
       }
     }
+    results.sort((a, b) => a.symbol.localeCompare(b.symbol))
     setSearchResult(results)
   }
-
-  console.log(dbStockData)
+  console.log({isLoading})
+  console.log(stockData)
   console.log({ symbolInput }, { searchResult })
   return (
     <div className="flex h-[100vh] w-full items-center justify-center bg-gray-100 p-2 text-slate-600">
@@ -53,13 +49,7 @@ export default function SymbolPage() {
           />
         </div>
         <div className="relative m-0 h-80 w-80 overflow-y-auto">
-          {isDropDown ? (
-            <StockMenu
-              items={searchResult}
-              onSelect={handleSelect}
-              onSelectChange={handleSelectChange}
-            />
-          ) : null}
+          {isDropDown ? <StockMenu items={searchResult} onSelect={handleSelect} /> : null}
         </div>
       </div>
     </div>

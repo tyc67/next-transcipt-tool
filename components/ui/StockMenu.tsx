@@ -5,10 +5,9 @@ import { Company } from '@/hooks/useSymbol'
 interface Props {
   items: Company[]
   onSelect: (item: string) => void
-  onSelectChange: (item: string) => void
 }
 
-export default function StockMenu({ items, onSelect, onSelectChange }: Props) {
+export default function StockMenu({ items, onSelect }: Props) {
   const menu = useRef<HTMLUListElement | null>(null)
   const [index, setIndex] = useState<number>(0)
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1)
@@ -47,16 +46,10 @@ export default function StockMenu({ items, onSelect, onSelectChange }: Props) {
     }
   }, [index, onSelect, options])
 
-  useEffect(() => {
-    onSelectChange(options[index]?.symbol)
-  }, [index, onSelectChange, options])
-
   const handleItemHover = (idx: number) => {
     setIndex(idx)
     setHoveredIndex(idx)
   }
-
-  console.log({ index }, { hoveredIndex })
 
   return (
     <>
