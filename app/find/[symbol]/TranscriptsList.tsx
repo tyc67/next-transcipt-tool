@@ -1,22 +1,19 @@
-'use client'
-
 import { supabaseTranscript } from '@/types/earnings'
 
 interface TranscriptslistProps {
-  earnigsData: supabaseTranscript[]
-  transcriptId: string | undefined
+  data: supabaseTranscript[]
+  selectedItem: string | undefined
   onSelect: (item: supabaseTranscript) => void
 }
 
-// co-locate components along with pages.tsx
 export default function TranscriptList({
-  earnigsData,
-  transcriptId,
+  data,
+  selectedItem,
   onSelect,
 }: TranscriptslistProps) {
   return (
     <>
-      {earnigsData?.map((d: supabaseTranscript) => (
+      {data?.map((d: supabaseTranscript) => (
         <button
           key={d.id}
           onClick={() => onSelect(d)}
@@ -24,7 +21,7 @@ export default function TranscriptList({
         >
           <p
             className={`border-b-2 ${
-              d.parent_transcript_id === transcriptId
+              d.parent_transcript_id === selectedItem
                 ? 'border-red-500'
                 : 'border-gray-300 hover:border-gray-500'
             }`}

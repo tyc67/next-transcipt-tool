@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 export const NAV_HEIGHT = '4rem';
-export const NAV_HEIGHT_BOX = '(8rem - 4rem)';
+export const NAV_HEIGHT_BOX = '(9.5rem - 4rem)';
 
 // A component that has a unified height constraint that can overflow as expected
 export default function FixedHeightLayout({ ...props }: React.HTMLProps<HTMLDivElement> & { tagName?: any }) {

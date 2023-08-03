@@ -3,13 +3,15 @@ import TextArea from '@/components/ui/TextArea'
 import IconButton from '@/components/ui/IconButton'
 import { FireOutlined } from '@ant-design/icons'
 import { Qalist, useAskAi } from '@/hooks/useAskAi'
+import { useParams } from 'next/navigation'
 
 interface UserAskAiProps {
-  symbol: string
   transcriptId: string | undefined
 }
 
-export default function UserAsking({ symbol, transcriptId }: UserAskAiProps) {
+export default function UserAsking({ transcriptId }: UserAskAiProps) {
+  const params = useParams()
+  const symbol = params.symbol
   const [textareaValue, setTextareaValue] = useState<string>('')
   const [aiAnswer, setAiAnswer] = useState<Qalist | null>(null)
   const { data, error, isLoading, fetchQuestionAnswer } = useAskAi()
@@ -35,7 +37,7 @@ export default function UserAsking({ symbol, transcriptId }: UserAskAiProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-2 p-2"> 
+      <div className="flex flex-col gap-2 p-2">
         <p className="py-2 font-semibold text-slate-900">
           QaReasoning WorkSpace, enter your question below
         </p>

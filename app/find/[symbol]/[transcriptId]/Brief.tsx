@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useEffect, useState } from 'react'
 import Spinner from '@/components/ui/Spinner'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -14,7 +12,6 @@ export default function Brief({
   const [anaylistKeypoint, setAnaylistKeypoint] = useState<string[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  //TODO: improve fetchdata performance
   useEffect(() => {
     const getKeypoint = async () => {
       const { data } = await supabase
@@ -34,7 +31,7 @@ export default function Brief({
     }
   }, [supabase, transcriptId])
 
-  console.log(companyKeypoint?.length)
+  console.log('key-point: ',companyKeypoint?.length)
   console.log({ transcriptId })
 
   return (

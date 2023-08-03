@@ -7,24 +7,17 @@ import { useMultiDocument } from '@/hooks/useMultiDocument'
 
 export default function CompareAsking({
   selectedTranscriptList,
-  onAnswerChange,
 }: {
   selectedTranscriptList: supabaseTranscript[]
-  onAnswerChange: (data) => void
 }) {
   const [textareaValue, setTextareaValue] = useState<string>('')
-  const { data, error, isLoading, fetchQuestionAnswer, fetchAllDocs } = useMultiDocument()
-
-  useEffect(() => {
-    onAnswerChange(data)
-  }, [data, onAnswerChange])
+  const { data: aiAnswer, error, isLoading, fetchQuestionAnswer, fetchAllDocs } = useMultiDocument()
 
   const handleTextareaChange = (value: string) => {
     setTextareaValue(value)
   }
 
   const handleAskAi = () => {
-    onAnswerChange(null)
     console.log('multiple docs reasoning...')
     const questionDocuments = selectedTranscriptList.map((list) => ({
       symbol: list.symbol,
@@ -46,6 +39,14 @@ export default function CompareAsking({
             <FireOutlined />
           </IconButton>
         </span>
+      </div>
+      <div className="relative flex w-full cursor-text flex-col overflow-y-auto rounded-md bg-slate-50 p-2 outline-none outline outline-2 hover:bg-slate-100">
+        {aiAnswer?.map((data, idx) => (
+          <div key={idx} className="rounded-md p-2 outline-none hover:bg-slate-100">
+            <p>-{data.symbol}:</p>
+            <p>{data.answer}</p>
+          </div>
+        ))}
       </div>
     </>
   )

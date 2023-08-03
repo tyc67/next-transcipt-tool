@@ -9,15 +9,15 @@ interface Props {
   to?: string
   text?: string
   isSelected?: boolean
-  isLoading: boolean
+  isLoading?: boolean
   calltoAction: () => void
 }
 
 export default React.memo(function CheckListButton({
-  color = 'blue',
+  color,
   color2,
   to,
-  text = 'check transcriptList',
+  text,
   isSelected,
   isLoading,
   calltoAction,
@@ -25,7 +25,7 @@ export default React.memo(function CheckListButton({
   return (
     <div
       id="md-button"
-      className={`text-md flex w-[15rem] min-w-[15rem] min-h-[1rem] max-h-[1.5rem] flex-row items-center  gap-4 whitespace-nowrap rounded-md px-4 ${
+      className={`text-md flex min-w-[10rem] min-h-[1rem] max-h-[1.5rem] flex-row items-center  gap-4 whitespace-nowrap rounded-md px-4 ${
         isSelected
           ? `bg-${color}-600 hover:bg-${color}-700 text-white`
           : 'bg-white text-slate-600 hover:bg-slate-200 '
