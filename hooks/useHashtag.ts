@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react'
+import { type HashtagRequest } from '@/app/hashtag-data/route'
 
 export const useHashtag = () => {
   const [data, setData] = useState<any[] | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const fetchHashtag = useCallback(async (query) => {
+  const fetchHashtag = useCallback(async (query: HashtagRequest) => {
     try {
       setIsLoading(true)
       const res = await fetch(`http://localhost:3000/hashtag-data`, {
@@ -18,7 +19,7 @@ export const useHashtag = () => {
       }
       const responseData = await res.json()
       setData(responseData)
-      return { ok: true, status:responseData.resStatus ,message: 'hashtag updated' }
+      return { ok: true, status: responseData.resStatus, message: 'hashtag updated' }
     } catch (err: any) {
       setError(err)
     } finally {

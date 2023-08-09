@@ -4,8 +4,8 @@ import React from 'react'
 import Spinner from './Spinner'
 
 interface Props {
-  color?: Apprentice.Colors
-  color2?: Apprentice.Colors
+  color?: string
+  color2?: string
   to?: string
   text?: string
   isSelected?: boolean
@@ -25,7 +25,7 @@ export default React.memo(function CheckListButton({
   return (
     <div
       id="md-button"
-      className={`text-md flex min-w-[10rem] min-h-[1rem] max-h-[1.5rem] flex-row items-center  gap-4 whitespace-nowrap rounded-md px-4 ${
+      className={`text-md flex max-h-[1.5rem] min-h-[1rem] min-w-[10rem] flex-row items-center  gap-4 whitespace-nowrap rounded-md px-4 ${
         isSelected
           ? `bg-${color}-600 hover:bg-${color}-700 text-white`
           : 'bg-white text-slate-600 hover:bg-slate-200 '

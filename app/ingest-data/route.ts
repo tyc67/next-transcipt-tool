@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(requestData)
-  } catch (err) {
-    console.log(err)
+  } catch (err: any) {
+    // console.log(err)
+    throw new UserError(err)
   }
 }

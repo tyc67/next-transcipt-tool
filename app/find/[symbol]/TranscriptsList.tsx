@@ -1,16 +1,12 @@
 import { supabaseTranscript } from '@/types/earnings'
 
 interface TranscriptslistProps {
-  data: supabaseTranscript[]
+  data: any[] | null
   selectedItem: string | undefined
   onSelect: (item: supabaseTranscript) => void
 }
 
-export default function TranscriptList({
-  data,
-  selectedItem,
-  onSelect,
-}: TranscriptslistProps) {
+export default function TranscriptList({ data, selectedItem, onSelect }: TranscriptslistProps) {
   return (
     <>
       {data?.map((d: supabaseTranscript) => (

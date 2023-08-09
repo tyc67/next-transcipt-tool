@@ -12,10 +12,17 @@ export type VectorSearchRequest = {
   question: string
 }
 
-export type questionDoc = {
-  query: string
-  embedding: any
+export type VectorSearchResponse = {
+  symbol: string
+  transcriptId: string
+  question: string
+  answer: string
 }
+
+// export type questionDoc = {
+//   query: string
+//   embedding: any
+// }
 
 export type similarity = {
   id: string
@@ -23,20 +30,20 @@ export type similarity = {
   similarity: number
 }
 
-export interface ApiResponseData {
-  data: Qalist[]
-}
+// export interface ApiResponseData {
+//   data: Qalist[]
+// }
 
-export interface Qalist {
-  q: string
-  a: string
-}
+// export interface Qalist {
+//   q: string
+//   a: string
+// }
 
 // https://nextjs.org/docs/app/building-your-application/routing/router-handlers
 export async function POST(req: NextRequest) {
   try {
     const requestData = (await req.json()) as VectorSearchRequest
-    console.log('vector-search-api: ', requestData)
+    // console.log('vector-search-api: ', requestData)
     if (!requestData) {
       throw new UserError('Missing request data')
     }
@@ -101,7 +108,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ data })
   } catch (err: any) {
-    console.log(err)
+    // console.log(err)
     throw new UserError(err)
   }
 }

@@ -27,7 +27,7 @@ export async function openaiChatCompletion(message: string) {
       throw new Error(`${response.status} ${response.statusText}`)
     }
     const responseData = await response.json()
-    console.log('openai-chat-api: ',responseData)
+    console.log('openai-chat-api: ', responseData)
     const openaiResponse = responseData.choices[0].message.content
 
     return openaiResponse

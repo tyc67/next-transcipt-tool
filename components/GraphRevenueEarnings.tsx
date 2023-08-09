@@ -33,7 +33,7 @@ export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarn
   }
 
   return (
-    <div className='p-1'>
+    <div className="p-1">
       <span className="flex flex-row items-center gap-2 p-1">
         <div
           className={`cursor-pointer border-b-2 text-xs ${

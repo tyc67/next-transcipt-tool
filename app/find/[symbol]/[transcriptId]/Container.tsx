@@ -11,7 +11,7 @@ import { useContext, useState } from 'react'
 interface ContainerProps {
   selectedTranscriptContent: string
   selectedTranscriptId: string
-  selectedTranscriptTopics: string
+  selectedTranscriptTopics: string | null
   selectedTranscriptHashTag: string[]
 }
 
@@ -22,19 +22,19 @@ export default function Container({
   selectedTranscriptHashTag,
 }: ContainerProps) {
   const { transcript, setTranscript } = useContext(TranscriptContext)
-  console.log('transcriptId_Context:', transcript)
-  console.log('transcriptId_ServerComponent:', selectedTranscriptId)
+  // why refresh page the useContext state disapper?
+  // console.log('transcriptId_Context:', transcript)
+  // console.log('transcriptId_ServerComponent:', selectedTranscriptId)
 
   const [hashTab, setHashTab] = useState(false)
 
-  console.log(selectedTranscriptHashTag)
   return (
     <>
       <WorkSpace>
         <p>fetch data in server component</p>
         <div className="flex flex-row gap-2">
           {selectedTranscriptHashTag?.map((tag, idx) => (
-            <div key={idx} className="rounded-md text-sm bg-yellow-200 p-1">
+            <div key={idx} className="rounded-md bg-yellow-200 p-1 text-sm">
               {tag}
             </div>
           ))}

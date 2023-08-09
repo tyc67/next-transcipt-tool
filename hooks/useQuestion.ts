@@ -3,7 +3,7 @@ import { type VectorSearchRequest } from '@/app/vector-search/route'
 
 interface UseQuestionProps {
   symbol: string
-  transcriptId: string | undefined
+  transcriptId: string
   questions: string[]
 }
 
@@ -25,7 +25,7 @@ export const useQuestion = ({ symbol, transcriptId, questions }: UseQuestionProp
           throw new Error(`${res.status} ${res.statusText}`)
         }
         const responseData = await res.json()
-        
+
         return responseData.data[0]
       } catch (err: any) {
         setError(err)

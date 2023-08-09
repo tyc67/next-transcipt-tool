@@ -8,7 +8,7 @@ export const useTranscriptList = (symbol?: string) => {
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const memoizedData = useMemo(() => data, [data])
-  
+
   useEffect(() => {
     const fetchTranscriptData = async () => {
       try {

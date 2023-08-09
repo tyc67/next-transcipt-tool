@@ -2,8 +2,13 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
+export interface HashtagRequest {
+  transcriptId: string
+  hashtagInput: string
+}
+
 export async function POST(req: NextRequest) {
-  const reqData = await req.json()
+  const reqData: HashtagRequest = await req.json()
   const supabase = createRouteHandlerClient({ cookies })
 
   const { data: existHashtag, error: existHashtagError } = await supabase

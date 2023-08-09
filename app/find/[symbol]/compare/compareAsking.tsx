@@ -18,7 +18,6 @@ export default function CompareAsking({
   }
 
   const handleAskAi = () => {
-    console.log('multiple docs reasoning...')
     const questionDocuments = selectedTranscriptList.map((list) => ({
       symbol: list.symbol,
       transcriptId: list.parent_transcript_id,

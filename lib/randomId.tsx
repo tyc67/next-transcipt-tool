@@ -1,6 +1,6 @@
 const { getRandomValues } = require('crypto')
 
- export const generateRandomId = () => {
+export const generateRandomId = () => {
   const length = 8
   const bytesNeeded = Math.ceil(length / 2)
   const array = new Uint32Array(bytesNeeded)

@@ -111,8 +111,8 @@ export class MarkdownSource extends BaseSource {
   type = 'markdown' as const
 
   constructor(source: string, public filePath: string, public parentFilePath?: string) {
-    
-    const [symbol, year, quarter, extension] = filePath.split('/').pop().split(/[_\.]/)
+    const lastData = filePath.split('/').pop()
+    const [symbol, year, quarter, extension] = lastData?.split(/[_\.]/) ?? []
     const filename = { symbol, year, quarter }
 
     const path = filePath.replace(/^pages/, '').replace(/\.mdx?$/, '')
@@ -140,12 +140,11 @@ export class MarkdownSource extends BaseSource {
 
 const Constants = {
   resources: {
-    transcripts: 'app/docs'
-  }
+    transcripts: 'app/docs',
+  },
 }
 
-// fetch sources to index for search
-// why docs can't work but app/docs can.
+// fetch sources to index for search, why docs can't work but app/docs can.
 export async function fetchResources() {
   const guideResources = (await walk(Constants.resources.transcripts)).map(
     (entry) => new MarkdownSource('docs', entry.path)

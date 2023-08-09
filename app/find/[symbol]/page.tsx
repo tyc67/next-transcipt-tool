@@ -16,8 +16,6 @@ export const metadata: Metadata = {
 // what is component serialized ?
 // Next13 fetch data directly inside server components, and cached automatically inside of app router
 export default async function Page({ params: { symbol } }: { params: { symbol: string } }) {
-  console.log('Good Day, Next.js! [symbol] page.tsx render')
-
   const supabase = createServerComponentClient({ cookies })
   const { data, error } = await supabase.from('transcript').select().eq('symbol', symbol)
   const supabaseData = data as supabaseTranscript[]
@@ -26,8 +24,8 @@ export default async function Page({ params: { symbol } }: { params: { symbol: s
   //   notFound()
   // }
   if (error) {
-    console.log('Error: ', error.message)
-    // throw new Error (error.message)
+    // console.log('Error: ', error.message)
+    throw new Error(error.message)
   }
 
   return (

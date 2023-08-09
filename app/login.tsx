@@ -6,14 +6,14 @@ import { useRouter } from 'next/navigation'
 export default function Login() {
   const router = useRouter()
   const supabase = createClientComponentClient()
-  
+
   const handleSignUp = async () => {
     await supabase.auth.signUp({
       email: 'johndoe@supabase.com',
       password: 'superman',
-      options:{
-        emailRedirectTo:`${location.origin}/auth/callback`
-      }
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback`,
+      },
     })
     router.refresh()
   }

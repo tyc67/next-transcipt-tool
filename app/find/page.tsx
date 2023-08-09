@@ -9,8 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  console.log('Good Day, Next.js! [find] page.tsx render')
-  return (
-    <SearchBar/>
-  )
+  // console.log('Good Day, Next.js! [find] page.tsx render')
+  return <SearchBar />
 }

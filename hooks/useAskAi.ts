@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react'
-import { type VectorSearchRequest } from '../app/vector-search/route'
+import { type VectorSearchRequest, VectorSearchResponse } from '../app/vector-search/route'
 
 export const useAskAi = () => {
-  const [data, setData] = useState<any[] | null>(null)
+  const [data, setData] = useState<VectorSearchResponse | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 

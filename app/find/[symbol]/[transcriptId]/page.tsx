@@ -22,7 +22,7 @@ export default async function Page({
     .select()
     .like('parent_transcript_id', `%${transcriptId}%`)
 
-  console.log('params: ', transcriptId)
+  // console.log('params: ', transcriptId)
   // console.log('dataServerComponent: ', data)
 
   if (data?.length === 0) {
@@ -32,7 +32,7 @@ export default async function Page({
   const selectedTranscriptContent = data?.[0].content
   const selectedTranscriptId = data?.[0].parent_transcript_id
   const selectedTranscriptTopics = data?.[0].keypoint_topics
-  const selectedTranscriptHashTag= data?.[0].hashtag
+  const selectedTranscriptHashTag = data?.[0].hashtag
 
   return (
     <>

@@ -7,7 +7,7 @@ import { createContext, useState } from 'react'
 //     setTranscript: React.Dispatch<React.SetStateAction<string>>
 //   }
 
-export const TranscriptContext = createContext<TranscriptContext | null>(null)
+export const TranscriptContext = createContext<any | null>(null)
 
 export const TranscriptProvider = ({ children }: { children: any }) => {
   const [transcript, setTranscript] = useState('')

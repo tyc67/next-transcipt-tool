@@ -35,7 +35,7 @@ export default function BarchartTest({
     isHovering: false,
   })
 
-  const handleMouseOver = (e) => {
+  const handleMouseOver = (e: any) => {
     const { id } = e.target
     const { top, height } = e.target.getBoundingClientRect()
     setSquarePosition({ id, top, height, isHovering: true })

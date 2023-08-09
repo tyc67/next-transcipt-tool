@@ -34,15 +34,16 @@ export default function StockMenu({ items, onSelect }: Props) {
           break
         case 'Escape':
           e.stopPropagation()
-          console.log('leave menu')
           break
       }
     }
-
-    menu.current.tabIndex = 0
-    menu.current?.addEventListener('keydown', handleKey)
-    return () => {
-      menu.current?.removeEventListener('keydown', handleKey)
+    if (menu.current) {
+      menu.current.tabIndex = 0
+      menu.current?.addEventListener('keydown', handleKey)
+      return () => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        menu.current?.removeEventListener('keydown', handleKey)
+      }
     }
   }, [index, onSelect, options])
 

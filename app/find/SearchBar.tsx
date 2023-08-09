@@ -34,9 +34,9 @@ export default function SearchBar() {
     results.sort((a, b) => a.symbol.localeCompare(b.symbol))
     setSearchResult(results)
   }
-  console.log({ isLoading })
-  console.log(stockData)
-  console.log({ searchInput }, { searchResult })
+  // console.log({ isLoading })
+  // console.log(stockData)
+  // console.log({ searchInput }, { searchResult })
 
   return (
     <div className="flex h-[100vh] w-full items-center justify-center bg-gray-100 p-2 text-slate-600">

@@ -9,7 +9,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeReact from 'rehype-react'
 
-const MarkdownRenderer = ({ markdownContent }: { markdownContent: string | undefined }) => {
+const MarkdownRenderer = ({ markdownContent }: { markdownContent: string }) => {
   const [renderContent, setRenderContent] = useState<string>('')
   useEffect(() => {
     const markdownParser = async () => {
@@ -21,9 +21,6 @@ const MarkdownRenderer = ({ markdownContent }: { markdownContent: string | undef
           .use(rehypeSanitize)
           .use(rehypeStringify)
           .process(markdownContent)
-
-        // console.log(parsedContent)
-        // console.log(String(parsedContent))
 
         const html = document.createElement('div')
         html.textContent = String(parsedContent)

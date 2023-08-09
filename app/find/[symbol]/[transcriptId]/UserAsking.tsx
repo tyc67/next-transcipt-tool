@@ -2,18 +2,19 @@ import { useEffect, useState } from 'react'
 import TextArea from '@/components/ui/TextArea'
 import IconButton from '@/components/ui/IconButton'
 import { FireOutlined } from '@ant-design/icons'
-import { Qalist, useAskAi } from '@/hooks/useAskAi'
+import { useAskAi } from '@/hooks/useAskAi'
 import { useParams } from 'next/navigation'
+import { type VectorSearchRequest, VectorSearchResponse } from '@/app/vector-search/route'
 
 interface UserAskAiProps {
-  transcriptId: string | undefined
+  transcriptId: VectorSearchRequest['transcriptId']
 }
 
 export default function UserAsking({ transcriptId }: UserAskAiProps) {
   const params = useParams()
   const symbol = params.symbol
   const [textareaValue, setTextareaValue] = useState<string>('')
-  const [aiAnswer, setAiAnswer] = useState<Qalist | null>(null)
+  const [aiAnswer, setAiAnswer] = useState<VectorSearchResponse | null>(null)
   const { data, error, isLoading, fetchQuestionAnswer } = useAskAi()
 
   useEffect(() => {
@@ -30,10 +31,8 @@ export default function UserAsking({ transcriptId }: UserAskAiProps) {
   }
 
   const handleAskAi = () => {
-    console.log('iconbutton fire!')
     fetchQuestionAnswer({ symbol, transcriptId, question: textareaValue })
   }
-  console.log({ textareaValue }, { data })
 
   return (
     <>

@@ -14,7 +14,6 @@ export default function Navbar() {
     router.push('compare')
   }
   const handleCheckingAction = async () => {
-    console.log('checking and up-to-date')
     const response = await updateTranscript(params.symbol)
     if (response?.ok) {
       router.refresh()

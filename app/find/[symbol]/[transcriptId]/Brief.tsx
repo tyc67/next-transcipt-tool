@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Spinner from '@/components/ui/Spinner'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export default function Brief({
-  transcriptId,
-}: {
-  transcriptId: string | undefined
-}) {
+export default function Brief({ transcriptId }: { transcriptId: string | undefined }) {
   const supabase = createClientComponentClient()
   const [companyKeypoint, setCompanyKeyPoint] = useState<string[] | null>(null)
   const [anaylistKeypoint, setAnaylistKeypoint] = useState<string[] | null>(null)
@@ -31,8 +27,8 @@ export default function Brief({
     }
   }, [supabase, transcriptId])
 
-  console.log('key-point: ',companyKeypoint?.length)
-  console.log({ transcriptId })
+  // console.log('key-point: ', companyKeypoint?.length)
+  // console.log({ transcriptId })
 
   return (
     <>

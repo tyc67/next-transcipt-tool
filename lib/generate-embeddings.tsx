@@ -52,7 +52,7 @@ export default async function generateEmbeddings(stock?: string) {
 
     const testing16key = await openai16k({ context: context16k, question: questions16k[2] })
     console.log('find-keyword: ', testing16key)
-    
+
     const results16k = await Promise.all(
       questions16k.map((question) => openai16k({ context: context16k, question }))
     )
@@ -84,21 +84,22 @@ export default async function generateEmbeddings(stock?: string) {
       const embeddingResults = await Promise.all(embeddingPromises)
 
       // Supabase transaction setting
-      const supabasePromises = embeddingResults.map((results) =>
-        insertTranscriptSections(
-          transcriptId,
-          source,
-          heading,
-          results.content,
-          results.embeddings,
-          results.tokenUsage
+      if (heading !== undefined) {
+        const supabasePromises = embeddingResults.map((results) =>
+          insertTranscriptSections(
+            transcriptId,
+            source,
+            heading,
+            results.content,
+            results.embeddings,
+            results.tokenUsage
+          )
         )
-      )
-      const supabaseTranscriptSectionTable = await Promise.all(supabasePromises)
+        const supabaseTranscriptSectionTable = await Promise.all(supabasePromises)
+      }
     } catch (error: any) {
       throw new Error(error)
     }
-  
   }
   // return what value after all for loops has been done? use Promise.all?
 }

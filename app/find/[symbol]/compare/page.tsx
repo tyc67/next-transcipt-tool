@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({ params }: { params: string }) {
-  console.log('params: ', params)
+  // console.log('params: ', params)
 
   return (
     <>

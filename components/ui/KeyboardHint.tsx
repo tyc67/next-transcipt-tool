@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 export default React.memo(function KeyboardHint({ children }: React.PropsWithChildren) {
   return (
-    <kbd className="bg-white border-b-4 min-w-[1.5rem] p-1 px-2 cursor-default text-center rounded-md hover:border-none">
+    <kbd className="min-w-[1.5rem] cursor-default rounded-md border-b-4 bg-white p-1 px-2 text-center hover:border-none">
       {children}
     </kbd>
-  );
-});
+  )
+})

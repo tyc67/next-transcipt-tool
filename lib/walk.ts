@@ -33,6 +33,6 @@ export async function walk(resourceId: string, parentPath?: string): Promise<Wal
     (all, folderContents) => all.concat(folderContents),
     []
   )
-  
+
   return flattenFiles.sort((a, b) => a.path.localeCompare(b.path))
 }
