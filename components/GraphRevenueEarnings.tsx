@@ -1,15 +1,10 @@
 import BarchartTest, { type BarChartTestProps } from './ui/BarChartTest'
 import { useState } from 'react'
 
-interface PeriodData {
-  period: string
-  revenue: number
-  earning: number
-}
-
-interface financialData {
-  annual: PeriodData[]
-  quarterly: PeriodData[]
+export interface financialData {
+  annual: { period: string; revenue: number; earning: number }[]
+  quarterly: { period: string; revenue: number; earning: number }[]
+  eps: { period: string; actual: number | null; estimate: number }[]
 }
 
 interface GraphRevenueEarningsProps {
@@ -33,7 +28,7 @@ export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarn
   }
 
   return (
-    <div className="p-1">
+    <>
       <span className="flex flex-row items-center gap-2 p-1">
         <div
           className={`cursor-pointer border-b-2 text-xs ${
@@ -83,6 +78,6 @@ export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarn
         </div>
       </span>
       <BarchartTest chartData={graphData} containerWidth={600} containerHeight={400} />
-    </div>
+    </>
   )
 }

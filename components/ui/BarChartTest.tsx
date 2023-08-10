@@ -6,6 +6,7 @@ export interface BarChartTestProps {
   barColor1?: string
   barColor2?: string
   labelColor?: string
+  labelFontSize?: number
   chartData?: { period: string; revenue: number; earning: number }[]
 }
 
@@ -15,12 +16,12 @@ export default function BarchartTest({
   barColor1 = '#22c55e',
   barColor2 = '#3b82f6',
   labelColor = '#a1a1aa',
+  labelFontSize = 14,
   chartData = [],
 }: BarChartTestProps) {
-  const margin = { top: 20, right: 20, bottom: 40, left: 40 }
+  const margin = { top: 40, right: 20, bottom: 40, left: 50 }
   const axisColor = 'black'
   const axisWidth = 1
-  const labelfontSize = 11
   const barWidth = 10
   const labelX = chartData.map((data) => data.period)
   const axis_x_count = labelX.length
@@ -56,31 +57,18 @@ export default function BarchartTest({
     },${y} Z`
   }
 
-  function scaleData(data: any[], maxScale = containerHeight - margin.top - margin.bottom) {
-    const maxData = Math.max(...data)
-
-    const scaledData = data.map((value) => {
-      const scaledValue = (value / maxData) * maxScale
-      return scaledValue
-    })
-
+  function scaleData(
+    data: any[],
+    maxData: number,
+    maxScale = containerHeight - margin.top - margin.bottom
+  ) {
+    const scaledData = data.map((value) => (value / maxData) * maxScale)
     return scaledData
   }
 
-  const scaledDataR = scaleData(dataR)
-
-  function scaleData2(data: any[], maxScale = containerHeight - margin.top - margin.bottom) {
-    const maxData = Math.max(...dataR)
-
-    const scaledData = data.map((value) => {
-      const scaledValue = (value / maxData) * maxScale
-      return scaledValue
-    })
-
-    return scaledData
-  }
-
-  const scaledDataE = scaleData2(dataE)
+  const maxDataR = Math.max(...dataR)
+  const scaledDataR = scaleData(dataR, maxDataR)
+  const scaledDataE = scaleData(dataE, maxDataR)
 
   function findDigits(data: number[]) {
     let digitFrequency: any = {}
@@ -119,11 +107,7 @@ export default function BarchartTest({
     // console.log(step)
 
     const descendingValues = Array.from({ length: segment }, (_, i) => nextMaxValue - i * step)
-    const descendingValues1 = Array.from(
-      { length: segment },
-      (_, index) => nextMaxValue - index * step
-    )
-    // console.log(descendingValues)
+
     return descendingValues
   }
   const scaleOfAxisY = findDigits(dataY)
@@ -146,10 +130,11 @@ export default function BarchartTest({
   // document.createElement('div').getBoundingClientRect();
   // document.createElement('div').offsetHeight;
   // document.createElement('div').offsetTop;
+  //  <div className={`bg-transparent`} style={{ height: containerHeight, width: containerWidth }}>
+
   return (
     <>
-      {/* <div className={`bg-transparent`} style={{ height: containerHeight, width: containerWidth }}> */}
-      <svg className="bg-slate-50" viewBox={`0 0 ${containerWidth} ${containerHeight}`}>
+      <svg className=" bg-slate-50" viewBox={`0 0 ${containerWidth} ${containerHeight}`}>
         {formattedLabelY.map((data, idx) => {
           const offset = 1
           const y =
@@ -158,11 +143,11 @@ export default function BarchartTest({
           return (
             <g key={`axis-y-label-${idx}`}>
               <text
-                x={margin.left - labelfontSize * 1.75}
+                x={margin.left - labelFontSize * 1.75}
                 y={y}
                 fill={labelColor}
                 textAnchor="middle"
-                fontSize={labelfontSize}
+                fontSize={labelFontSize}
               >
                 {data}
               </text>
@@ -190,11 +175,11 @@ export default function BarchartTest({
         {labelX.map((data, idx) => {
           const x =
             ((containerWidth - margin.left - margin.right) / (axis_x_count + 1)) * (idx + 1.1)
-          const y = containerHeight - margin.bottom + labelfontSize * 2.5
+          const y = containerHeight - margin.bottom + labelFontSize * 2.5
 
           return (
             <g key={`axis-x-label-${idx}`}>
-              <text x={x} y={y} fill={labelColor} textAnchor="middle" fontSize={labelfontSize}>
+              <text x={x} y={y} fill={labelColor} textAnchor="middle" fontSize={labelFontSize}>
                 {data}
               </text>
             </g>
@@ -241,7 +226,7 @@ export default function BarchartTest({
                     y={y + 15}
                     fill={labelColor}
                     textAnchor="start"
-                    fontSize={labelfontSize}
+                    fontSize={labelFontSize}
                   >
                     {formatNumber(dataR[idx] * 1000)}
                   </text>
@@ -259,7 +244,7 @@ export default function BarchartTest({
                     y={y + 15 + barWidth * 2}
                     fill={labelColor}
                     textAnchor="start"
-                    fontSize={labelfontSize}
+                    fontSize={labelFontSize}
                   >
                     {formatNumber(dataE[idx] * 1000)}
                   </text>
@@ -287,7 +272,6 @@ export default function BarchartTest({
           )
         })}
       </svg>
-      {/* </div> */}
     </>
   )
 }

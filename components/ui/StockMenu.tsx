@@ -20,13 +20,17 @@ export default function StockMenu({ items, onSelect }: Props) {
       switch (keyHash) {
         case 'ArrowUp':
           e.preventDefault()
-          setIndex(index - 1 < 0 ? options.length - 1 : index - 1)
-          setHoveredIndex(index - 1 < 0 ? options.length - 1 : index - 1)
+          const prevIndex = index - 1 < 0 ? options.length - 1 : index - 1
+          setIndex(prevIndex)
+          setHoveredIndex(prevIndex)
+          scrollToOption(prevIndex)
           break
         case 'ArrowDown':
           e.preventDefault()
-          setIndex(index + 1 >= options.length ? 0 : index + 1)
-          setHoveredIndex(index + 1 >= options.length ? 0 : index + 1)
+          const nextIndex = index + 1 >= options.length ? 0 : index + 1
+          setIndex(nextIndex)
+          setHoveredIndex(nextIndex)
+          scrollToOption(nextIndex)
           break
         case 'Enter':
           e.preventDefault()
@@ -37,6 +41,15 @@ export default function StockMenu({ items, onSelect }: Props) {
           break
       }
     }
+
+    const scrollToOption = (optionIndex: number) => {
+      if (menu.current && menu.current.children[optionIndex]) {
+        menu.current.children[optionIndex].scrollIntoView({
+          block: 'nearest',
+        })
+      }
+    }
+
     if (menu.current) {
       menu.current.tabIndex = 0
       menu.current?.addEventListener('keydown', handleKey)

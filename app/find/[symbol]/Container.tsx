@@ -7,7 +7,7 @@ import { TranscriptContext } from './TranscriptContext'
 import WorkSpace from './Workspace'
 import TranscriptList from './TranscriptsList'
 import GraphRevenueEarnings from '@/components/GraphRevenueEarnings'
-import GraphConsensuEPS from '@/components/GraphConsensuEPS'
+import GraphConsensusEPS from '@/components/GraphConsensusEPS'
 
 const dataTSM = {
   annual: [
@@ -76,13 +76,15 @@ export default function Container({
         />
       </WorkSpace>
       <WorkSpace>
-        <p>Financial Graph Area</p>
-        <GraphRevenueEarnings financialData={dataAMD} />
-        <GraphConsensuEPS />
-
-        <p>Revenue & Expenses Breakdown</p>
-        <p>Multiples</p>
-        <p>Actuals & Forward Estimates</p>
+        <div className="h-1/2 w-2/3 overflow-y-hidden">
+          <GraphRevenueEarnings financialData={dataAMD} />
+        </div>
+        <div className="h-1/2 w-2/3 overflow-y-hidden">
+          <GraphConsensusEPS financialData={dataAMD} />
+          {/* <p>Revenue & Expenses Breakdown</p>
+          <p>Multiples</p>
+          <p>Actuals & Forward Estimates</p> */}
+        </div>
       </WorkSpace>
     </>
   )
