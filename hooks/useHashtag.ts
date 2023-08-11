@@ -9,7 +9,7 @@ export const useHashtag = () => {
   const fetchHashtag = useCallback(async (query: HashtagRequest) => {
     try {
       setIsLoading(true)
-      const res = await fetch(`http://localhost:3000/hashtag-data`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/hashtag-data`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(query),

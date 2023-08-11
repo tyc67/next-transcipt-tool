@@ -16,7 +16,7 @@ export const useQuestion = ({ symbol, transcriptId, questions }: UseQuestionProp
     const fetchQuestionAnswer = async ({ symbol, transcriptId, question }: VectorSearchRequest) => {
       try {
         setIsLoading(true)
-        const res = await fetch(`http://localhost:3000/vector-search`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/vector-search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ symbol, transcriptId, question }),

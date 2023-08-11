@@ -6,7 +6,6 @@ import generateEmbeddings from '@/lib/generate-embeddings'
 export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json()
-    console.log('ingest-api-test: ', requestData)
 
     if (!requestData) {
       throw new UserError('Missing request data')
@@ -23,7 +22,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(requestData)
   } catch (err: any) {
-    // console.log(err)
     throw new UserError(err)
   }
 }

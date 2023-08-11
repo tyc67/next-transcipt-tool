@@ -16,9 +16,8 @@ export async function POST(req: NextRequest) {
     .select('parent_transcript_id,hashtag')
     .eq('parent_transcript_id', reqData.transcriptId)
 
-  const hashtagData: any[] = existHashtag?.[0].hashtag
+  const hashtagData: any[] = existHashtag?.[0].hashtag ?? []
   const isHashtagExist = hashtagData.includes(reqData.hashtagInput)
-
   let resStatus = 0
 
   if (!isHashtagExist) {
