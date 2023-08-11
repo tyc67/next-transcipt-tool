@@ -4,10 +4,12 @@ import { useContext, useState } from 'react'
 import { supabaseTranscript } from '@/types/earnings'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { TranscriptContext } from './TranscriptContext'
-import WorkSpace from './Workspace'
+import WorkSpace from '../../../components/Workspace'
 import TranscriptList from './TranscriptsList'
 import GraphRevenueEarnings from '@/components/GraphRevenueEarnings'
 import GraphConsensusEPS from '@/components/GraphConsensusEPS'
+import CheckListButton from '@/components/ui/CheckListButton'
+import { useUpdateTranscript } from '@/hooks/useUpdateTranscript'
 
 const dataTSM = {
   annual: [
@@ -56,6 +58,7 @@ export default function Container({
   const pathname = usePathname()
   const router = useRouter()
   const { transcript, setTranscript } = useContext(TranscriptContext)
+  const { isLoading, updateTranscript } = useUpdateTranscript()
 
   const handleSelectedTranscript = (item: supabaseTranscript) => {
     setSelectedTranscript(item)
@@ -64,11 +67,37 @@ export default function Container({
     router.push(`${pathname}/${subroute}`)
   }
 
+  const handleUpdateAction = async () => {
+    const response = await updateTranscript(params.symbol)
+    if (response?.ok) {
+      router.refresh()
+    }
+  }
+
   // console.log({ earningsData })
 
   return (
     <>
       <WorkSpace>
+        <div className="px-4 text-slate-900">
+          <span className="flex flex-row items-baseline">
+            <p className="mr-3 py-2 text-3xl font-semibold">{params.symbol}</p>
+            <p className="text-base">Apple Inc.</p>
+            <div className="ml-auto">
+              <CheckListButton
+                isLoading={isLoading}
+                calltoAction={handleUpdateAction}
+                text="update"
+                color="blue"
+              />
+            </div>
+          </span>
+          <span className="flex flex-row items-baseline gap-2">
+            <p className="text-2xl">$177.87</p>
+            <p className="text-sm text-red-500">-0.22 (-0.12%)</p>
+            <p className="text-[10px] text-slate-500">4:00 PM 08/10/23</p>
+          </span>
+        </div>
         <TranscriptList
           data={earningsData}
           selectedItem={selectedTranscript?.parent_transcript_id}

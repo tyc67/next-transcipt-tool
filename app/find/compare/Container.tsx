@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import WorkSpace from '../Workspace'
+import WorkSpace from '../../../components/Workspace'
 import SearchInput from '@/components/ui/SearchInput'
-import TranscriptList from '../TranscriptsList'
+import TranscriptList from '../[symbol]/TranscriptsList'
 import { useTranscriptList } from '@/hooks/useTranscriptList'
 import { supabaseTranscript } from '@/types/earnings'
 import CompareAsking from './compareAsking'

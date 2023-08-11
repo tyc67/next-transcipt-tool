@@ -22,8 +22,6 @@ export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSPro
   const dataActual = financialData.eps.map((data) => data.actual)
   const dataEstimate = financialData.eps.map((data) => data.estimate)
 
-  console.log(financialData)
-  console.log({ dataActual }, { dataEstimate })
   const [dotPosition, setDotPosition] = useState({
     id: null,
     top: 0,

@@ -39,19 +39,17 @@ export default function SearchBar() {
   // console.log({ searchInput }, { searchResult })
 
   return (
-    <div className="flex h-[100vh] w-full items-center justify-center bg-gray-100 p-2 text-slate-600">
-      <div test-id="outer-contain">
-        <div className="m-0 w-80">
-          <SearchInput
-            value={searchInput}
-            placeholder={'search any stock...'}
-            onChange={(value) => handleSearch(value)}
-          />
+    <>
+      <SearchInput
+        value={searchInput}
+        placeholder={'search any stock...'}
+        onChange={(value) => handleSearch(value)}
+      />
+      {isDropDown && searchResult.length !== 0 ? (
+        <div className="w-full overflow-y-auto border border-solid border-indigo-300">
+          <StockMenu items={searchResult} onSelect={handleSelect} />
         </div>
-        <div className="relative m-0 h-80 w-80 overflow-y-auto">
-          {isDropDown ? <StockMenu items={searchResult} onSelect={handleSelect} /> : null}
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   )
 }

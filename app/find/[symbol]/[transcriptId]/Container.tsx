@@ -1,6 +1,6 @@
 'use client'
 
-import WorkSpace from '../Workspace'
+import WorkSpace from '../../../../components/Workspace'
 import Transcript from './Transcript'
 import UserAsking from './UserAsking'
 import Brief from './Brief'
@@ -31,7 +31,7 @@ export default function Container({
   return (
     <>
       <WorkSpace>
-        <p>fetch data in server component</p>
+        {/* <p>fetch data in server component</p> */}
         <div className="flex flex-row gap-2">
           {selectedTranscriptHashTag?.map((tag, idx) => (
             <div key={idx} className="rounded-md bg-yellow-200 p-1 text-sm">
@@ -43,7 +43,7 @@ export default function Container({
       </WorkSpace>
       <WorkSpace>
         <span className="flex flex-row gap-4">
-          <p>fetch data in client component</p>
+          {/* <p>fetch data in client component</p> */}
           <div
             className="cursor-pointer rounded-md bg-slate-300 px-2"
             onClick={() => setHashTab(!hashTab)}

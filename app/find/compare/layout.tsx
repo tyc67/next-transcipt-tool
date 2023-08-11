@@ -1,5 +1,5 @@
 import Navbar from '../Navbar'
-import { TranscriptProvider } from './TranscriptContext'
+import { TranscriptProvider } from '../[symbol]/TranscriptContext'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
