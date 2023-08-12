@@ -12,7 +12,7 @@ export const useUpdateTranscript = () => {
   const updateTranscript = useCallback(async (symbol: string) => {
     try {
       setIsLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/ingest-data`, {
+      const res = await fetch(`${window.location.origin}/ingest-data`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ symbol }),

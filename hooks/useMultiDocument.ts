@@ -9,7 +9,7 @@ export const useMultiDocument = () => {
   const fetchQuestionAnswer = useCallback(async (query: VectorSearchRequest) => {
     try {
       setIsLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/vector-search`, {
+      const res = await fetch(`${window.location.origin}/vector-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(query),
