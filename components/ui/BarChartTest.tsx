@@ -77,7 +77,6 @@ export default function BarchartTest({
 
     data.forEach((value) => {
       const numDigits = Math.floor(Math.log10(Math.abs(value * 1000))) + 1
-
       digitFrequency[numDigits] = (digitFrequency[numDigits] || 0) + 1
 
       if (digitFrequency[numDigits] > maxFrequency) {
@@ -85,7 +84,9 @@ export default function BarchartTest({
         maxFrequency = digitFrequency[numDigits]
       }
     })
-    if (mostNumDigits === -1) return []
+
+    if (mostNumDigits === -1 || -Infinity) return []
+
     const numUnit = Math.pow(10, mostNumDigits - 1)
     const maxValue = Math.max(...data.map((value) => value * 1000))
     const minValue = Math.min(
@@ -93,18 +94,9 @@ export default function BarchartTest({
     )
     const nextMaxValue = Math.ceil(maxValue / numUnit) * numUnit
     const nextMinValue = Math.ceil(minValue / numUnit) * numUnit
-    // console.log(data.map((value) => value * 1000).sort((a, b) => b - a))
-    // console.log(
-    //   data
-    //     .map((value) => value * 1000)
-    //     .filter((number) => number > numUnit)
-    //     .sort((a, b) => b - a)
-    // )
-    // console.log({ nextMaxValue }, { nextMinValue })
-    // console.log(maxValue, minValue)
+
     const segment = 10
     let step = (nextMaxValue - nextMinValue) / (segment - 1)
-    // console.log(step)
 
     const descendingValues = Array.from({ length: segment }, (_, i) => nextMaxValue - i * step)
 
@@ -123,18 +115,9 @@ export default function BarchartTest({
   const formattedLabelY = scaleOfAxisY.map((number) => formatNumber(number))
   const axis_y_count = formattedLabelY.length
 
-  // var(--font-size-1)
-  // font-size: --var-font-size-1;
-  // h-[--var-font-size-1] -> height: --var-font-size-1;
-  // height: ${containerHeight}px;
-  // document.createElement('div').getBoundingClientRect();
-  // document.createElement('div').offsetHeight;
-  // document.createElement('div').offsetTop;
-  //  <div className={`bg-transparent`} style={{ height: containerHeight, width: containerWidth }}>
-
   return (
     <>
-      <svg className=" bg-slate-50" viewBox={`0 0 ${containerWidth} ${containerHeight}`}>
+      <svg className="bg-transparent" viewBox={`0 0 ${containerWidth} ${containerHeight}`}>
         {formattedLabelY.map((data, idx) => {
           const offset = 1
           const y =
@@ -162,7 +145,6 @@ export default function BarchartTest({
             </g>
           )
         })}
-        {/* <path d="M0 0 L0,100 L5,100 L5,0 Z" stroke="red" strokeWidth="2" fill="yellow" /> */}
         <g key="x-axis">
           <path
             d={`M${margin.left},${containerHeight - margin.bottom} L${

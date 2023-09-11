@@ -27,9 +27,6 @@ export default function Brief({ transcriptId }: { transcriptId: string | undefin
     }
   }, [supabase, transcriptId])
 
-  // console.log('key-point: ', companyKeypoint?.length)
-  // console.log({ transcriptId })
-
   return (
     <>
       {isLoading ? (

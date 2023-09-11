@@ -1,36 +1,52 @@
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/nextAuth'
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { supabaseTranscript } from '@/types/earnings'
-
+import { notFound, redirect } from 'next/navigation'
+import { getSupabaseData } from '@/lib/getSupabaseData'
+import { getFinancialData } from '@/lib/getFinancialData'
 import Container from './Container'
-export const revalidate = 0
+import {
+  useAlphaVantageGenericServerSideProps,
+  type TransformedDailyData,
+  AlphaVantageApiResponseOverview,
+} from '@/hooks/useAlphaVantage'
 
-// https://nextjs.org/docs/app/api-reference/functions/generate-metadata
+const revalidate = 900
+
 export const metadata: Metadata = {
   title: `company transcript`,
   description: 'earnings transcript',
 }
 
-// what is component serialized ?
-// Next13 fetch data directly inside server components, and cached automatically inside of app router
 export default async function Page({ params: { symbol } }: { params: { symbol: string } }) {
-  const supabase = createServerComponentClient({ cookies })
-  const { data, error } = await supabase.from('transcript').select().eq('symbol', symbol)
-  const supabaseData = data as supabaseTranscript[]
-
-  // if (supabaseData.length === 0) {
-  //   notFound()
-  // }
-  if (error) {
-    // console.log('Error: ', error.message)
-    throw new Error(error.message)
+  const session = await getServerSession(authOptions)
+  const supabaseData = await getSupabaseData(symbol)
+  const graphData = await getFinancialData(symbol)
+  if (!session) {
+    redirect('/api/auth/signin')
   }
+
+  if (supabaseData.length === 0) {
+    notFound()
+  }
+
+  const overview = (await useAlphaVantageGenericServerSideProps(
+    symbol,
+    'OVERVIEW'
+  )) as AlphaVantageApiResponseOverview
+  const daily = (await useAlphaVantageGenericServerSideProps(
+    symbol,
+    'TIME_SERIES_DAILY'
+  )) as TransformedDailyData
+  const alphaVantageData = { overview: overview, daily: daily }
 
   return (
     <>
-      <Container supabaseData={supabaseData} />
+      <Container
+        supabaseData={supabaseData}
+        alphaVantageData={alphaVantageData}
+        financialData={graphData}
+      />
     </>
   )
 }

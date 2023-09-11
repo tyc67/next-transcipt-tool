@@ -1,7 +1,7 @@
-export type supabaseTranscript = {
+export type SupabaseTranscript = {
   checksum: string
   content: string
-  created_at: any //timestamptz
+  created_at: any
   heading: string
   id: string
   meta: any

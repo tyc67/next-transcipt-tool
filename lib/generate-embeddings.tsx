@@ -7,10 +7,6 @@ import { insertTranscriptSections } from './insertTranscriptSections'
 import { insertTranscript } from './insertTranscript'
 import { openai16k } from './openai-16k'
 
-// fetchSources->indexResource->walk docs->generate docs/mdfiles embeddings->store to supabase
-
-// TODO: how to check which md file is new or have changed -> re-generate and update (CREATE,UPDATE,DELETE mdfiles)
-
 export default async function generateEmbeddings(stock?: string) {
   const allSources = await fetchResources()
   const { data: allChecksums, error } = await supabase
@@ -29,8 +25,6 @@ export default async function generateEmbeddings(stock?: string) {
 
     existingTranscript = stockChecksums
   }
-  console.log(`Discovered ${embeddingSources.length} files`)
-  console.log(embeddingSources)
 
   const existingChecksums = existingTranscript?.map((entry) => entry.checksum)
 
@@ -40,7 +34,6 @@ export default async function generateEmbeddings(stock?: string) {
 
     const isMatchExistingChecksum = existingChecksums?.includes(checksum)
     if (isMatchExistingChecksum) {
-      console.log('data exists in Supabase, skip to the next !')
       continue
     }
     const context16k = sections[0].content
@@ -50,9 +43,6 @@ export default async function generateEmbeddings(stock?: string) {
       `please help me in identifying high-frequency topics, using bullet points`,
     ]
 
-    const testing16key = await openai16k({ context: context16k, question: questions16k[2] })
-    console.log('find-keyword: ', testing16key)
-
     const results16k = await Promise.all(
       questions16k.map((question) => openai16k({ context: context16k, question }))
     )
@@ -60,7 +50,6 @@ export default async function generateEmbeddings(stock?: string) {
     const analystKeypoint = results16k[1].openaiAnswer.split('\n').map((word) => word.trim())
     const frequentTopics = results16k[2].openaiAnswer
 
-    // table: transcript
     const supabaseTranscriptTable = insertTranscript(
       transcriptId,
       source,
@@ -70,12 +59,8 @@ export default async function generateEmbeddings(stock?: string) {
       frequentTopics
     )
 
-    // check sections is 1 object
-    console.log('section check:', sections.length)
     const [{ content, heading }] = sections
-    console.log(`Adding ## ${heading} ## transcript sections with embeddings`)
     const splitedDocuments = await textSplitter(content)
-    console.log(`splitted to ${splitedDocuments.length} documents`)
 
     try {
       const embeddingPromises = splitedDocuments.map((document) =>
@@ -83,7 +68,6 @@ export default async function generateEmbeddings(stock?: string) {
       )
       const embeddingResults = await Promise.all(embeddingPromises)
 
-      // Supabase transaction setting
       if (heading !== undefined) {
         const supabasePromises = embeddingResults.map((results) =>
           insertTranscriptSections(
@@ -101,5 +85,4 @@ export default async function generateEmbeddings(stock?: string) {
       throw new Error(error)
     }
   }
-  // return what value after all for loops has been done? use Promise.all?
 }

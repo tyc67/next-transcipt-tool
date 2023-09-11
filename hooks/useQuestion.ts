@@ -49,8 +49,5 @@ export const useQuestion = ({ symbol, transcriptId, questions }: UseQuestionProp
     }
   }, [symbol, transcriptId])
 
-  // how to solve questions array as an dependency?
-  // how to solve answer render lag?
-
   return { data, error, isLoading }
 }

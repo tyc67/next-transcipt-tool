@@ -4,14 +4,15 @@ import { Company } from '@/hooks/useSymbol'
 
 interface Props {
   items: Company[]
+  subitem: boolean
   onSelect: (item: string) => void
+  onBlur: () => void
 }
 
-export default function StockMenu({ items, onSelect }: Props) {
+export default function StockMenu({ items, subitem, onSelect, onBlur }: Props) {
   const menu = useRef<HTMLUListElement | null>(null)
   const [index, setIndex] = useState<number>(0)
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1)
-  const themeColor = 'gray'
   const options = items
 
   useEffect(() => {
@@ -67,7 +68,11 @@ export default function StockMenu({ items, onSelect }: Props) {
 
   return (
     <>
-      <ul ref={menu} className="relative flex flex-col gap-1 bg-white p-2">
+      <ul
+        ref={menu}
+        className="flex flex-col gap-1 bg-white p-2 outline-none dark:bg-gray-600 dark:text-slate-300"
+        onBlur={() => onBlur()}
+      >
         {options.map((data, idx) => (
           <li
             key={idx}
@@ -75,12 +80,12 @@ export default function StockMenu({ items, onSelect }: Props) {
             onMouseEnter={() => handleItemHover(idx)}
             onMouseLeave={() => handleItemHover(-1)}
             className={`cursor-pointer p-1 ${
-              index === idx || hoveredIndex === idx ? 'bg-gray-200' : ''
+              index === idx || hoveredIndex === idx ? 'bg-gray-200 dark:bg-gray-500' : ''
             }`}
           >
             <span className="flex flex-row items-baseline gap-2">
-              <p className="w-1/5 text-lg font-semibold">{data.symbol}</p>
-              <p className="w-4/5 text-sm font-light">{data.company_name}</p>
+              <p className="w-1/4 text-lg font-semibold">{data.symbol}</p>
+              {subitem ? <p className="w-3/4 text-sm font-light">{data.company_name}</p> : null}
             </span>
           </li>
         ))}

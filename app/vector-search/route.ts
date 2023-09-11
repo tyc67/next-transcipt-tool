@@ -19,31 +19,16 @@ export type VectorSearchResponse = {
   answer: string
 }
 
-// export type questionDoc = {
-//   query: string
-//   embedding: any
-// }
-
 export type similarity = {
   id: string
   content: string
   similarity: number
 }
 
-// export interface ApiResponseData {
-//   data: Qalist[]
-// }
-
-// export interface Qalist {
-//   q: string
-//   a: string
-// }
-
-// https://nextjs.org/docs/app/building-your-application/routing/router-handlers
 export async function POST(req: NextRequest) {
   try {
     const requestData = (await req.json()) as VectorSearchRequest
-    // console.log('vector-search-api: ', requestData)
+
     if (!requestData) {
       throw new UserError('Missing request data')
     }
@@ -56,9 +41,6 @@ export async function POST(req: NextRequest) {
       throw new ApplicationError('Failed to create embedding for question', embeddings)
     }
 
-    //TODO: SELECT .... FROM ... WHERE symbol in ["AAPL", "MSFT",....] and quarter... ORDER BY
-
-    // find similar docs from Supabase by PostgreSQL function
     const { error: matchError, data: matchSections } = await supabase.rpc(
       'match_transcript_section',
       {
@@ -76,22 +58,11 @@ export async function POST(req: NextRequest) {
 
     const similarSections = matchSections as similarity[]
 
-    // TODO: tokenizer
     let tokenCount = 0
     let contextText = ''
     for (let i = 0; i < similarSections.length; i++) {
       const str = similarSections[i].content
       contextText += `${str.trim()}\n---\n`
-      // const encoded = encode(str)
-      // console.log('Encoded this string looks like: ', encoded)
-
-      // console.log('We can look at each token and what it represents')
-      // for(let token of encoded){
-      //   console.log({token, string: decode([token])})
-      // }
-
-      // const decoded = decode(encoded)
-      // console.log('We can decode it back into:\n', decoded)
     }
     const promptInput = combinedPrompt(contextText, sanitizedQuery)
     const openaiAnswer = await openaiChatCompletion(promptInput)
@@ -104,11 +75,8 @@ export async function POST(req: NextRequest) {
       },
     ]
 
-    // how to define type on Response data?
-
     return NextResponse.json({ data })
   } catch (err: any) {
-    // console.log(err)
     throw new UserError(err)
   }
 }

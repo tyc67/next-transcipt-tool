@@ -21,7 +21,6 @@ export const useUpdateTranscript = () => {
         throw new Error(`${res.status} ${res.statusText}`)
       }
       const responseData: IngestDataApiResponse = await res.json()
-      // console.log(responseData.symbol)
       setData(responseData)
       return { ok: true, message: 'updated', data: responseData }
     } catch (err: any) {

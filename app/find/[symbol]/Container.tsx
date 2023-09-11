@@ -1,120 +1,123 @@
 'use client'
 
-import { useContext, useState } from 'react'
-import { supabaseTranscript } from '@/types/earnings'
+import { useContext, useEffect, useState } from 'react'
+import { SupabaseTranscript } from '@/types/earnings'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { TranscriptContext } from './TranscriptContext'
-import WorkSpace from '../../../components/Workspace'
-import TranscriptList from './TranscriptsList'
 import GraphRevenueEarnings from '@/components/GraphRevenueEarnings'
 import GraphConsensusEPS from '@/components/GraphConsensusEPS'
-import CheckListButton from '@/components/ui/CheckListButton'
-import { useUpdateTranscript } from '@/hooks/useUpdateTranscript'
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
+import BasicInfo from './BasicInfo'
+import Brief from './Brief'
+import UserAsking from './UserAsking'
+import AddComparison from './AddComparison'
+import { type TransformedDailyData, AlphaVantageApiResponseOverview } from '@/hooks/useAlphaVantage'
+import { type GraphData } from '@/lib/getFinancialData'
 
-const dataTSM = {
-  annual: [
-    { period: '2019', revenue: 1069988843, earning: 345263668 },
-    { period: '2020', revenue: 1339238429, earning: 517885387 },
-    { period: '2021', revenue: 1587415037, earning: 588918059 },
-    { period: '2022', revenue: 2263891292, earning: 1016530249 },
-  ],
-  quarterly: [
-    { period: '3Q2022', revenue: 613142743, earning: 280865780 },
-    { period: '4Q2022', revenue: 625530000, earning: 295904000 },
-    { period: '2Q2023', revenue: 508632973, earning: 206986561 },
-    { period: '3Q2023', revenue: 480841000, earning: 181799000 },
-  ],
-}
-
-const dataAMD = {
-  annual: [
-    { period: '2019', revenue: 6731000, earning: 341000 },
-    { period: '2020', revenue: 9763000, earning: 2490000 },
-    { period: '2021', revenue: 16434000, earning: 3162000 },
-    { period: '2022', revenue: 23601000, earning: 1320000 },
-  ],
-  quarterly: [
-    { period: '4Q2022', revenue: 5565000, earning: 66000 },
-    { period: '1Q2023', revenue: 5599000, earning: 21000 },
-    { period: '2Q2023', revenue: 5353000, earning: -139000 },
-    { period: '3Q2023', revenue: 5359000, earning: 27000 },
-  ],
-  eps: [
-    { period: '4Q2022', actual: 0.69, estimate: 0.67 },
-    { period: '1Q2023', actual: 0.6, estimate: 0.56 },
-    { period: '2Q2023', actual: 0.58, estimate: 0.57 },
-    { period: '3Q2023', actual: null, estimate: 0.68 },
-  ],
+interface ContainerProps {
+  supabaseData: SupabaseTranscript[]
+  alphaVantageData: {
+    overview: AlphaVantageApiResponseOverview
+    daily: TransformedDailyData
+  }
+  financialData: GraphData
 }
 
 export default function Container({
   supabaseData: earningsData,
-}: {
-  supabaseData: supabaseTranscript[]
-}) {
-  const [selectedTranscript, setSelectedTranscript] = useState<supabaseTranscript | null>(null)
-
+  alphaVantageData,
+  financialData,
+}: ContainerProps) {
+  const latestTranscript = earningsData.at(-1) || null
+  const [selectedTranscript, setSelectedTranscript] = useState<SupabaseTranscript | null>(
+    latestTranscript
+  )
+  const [semanticQueryList, setSemanticQueryList] = useState<SupabaseTranscript[]>([])
+  const [semanticQueryStock, setSemanticQueryStock] = useState<string[]>([])
   const params = useParams()
   const pathname = usePathname()
   const router = useRouter()
   const { transcript, setTranscript } = useContext(TranscriptContext)
-  const { isLoading, updateTranscript } = useUpdateTranscript()
+  const supabase = createClientComponentClient()
 
-  const handleSelectedTranscript = (item: supabaseTranscript) => {
-    setSelectedTranscript(item)
-    setTranscript(item.parent_transcript_id)
-    const subroute = item.parent_transcript_id.split('-')[0]
-    router.push(`${pathname}/${subroute}`)
-  }
+  useEffect(() => {
+    const fetchQueryData = async () => {
+      const { data, error } = await supabase
+        .from('transcript')
+        .select()
+        .in('symbol', semanticQueryStock)
 
-  const handleUpdateAction = async () => {
-    const response = await updateTranscript(params.symbol)
-    if (response?.ok) {
-      router.refresh()
+      if (data) {
+        data.sort((a, b) => a.symbol.localeCompare(b.symbol))
+        setSemanticQueryList(data)
+      }
     }
-  }
+    if (semanticQueryStock) {
+      fetchQueryData()
+    }
+  }, [semanticQueryStock, supabase])
 
-  // console.log({ earningsData })
+  const handleSelectQueryStock = (item: string[]) => {
+    setSemanticQueryStock(item)
+  }
 
   return (
     <>
-      <WorkSpace>
-        <div className="px-4 text-slate-900">
-          <span className="flex flex-row items-baseline">
-            <p className="mr-3 py-2 text-3xl font-semibold">{params.symbol}</p>
-            <p className="text-base">Apple Inc.</p>
-            <div className="ml-auto">
-              <CheckListButton
-                isLoading={isLoading}
-                calltoAction={handleUpdateAction}
-                text="update"
-                color="blue"
-              />
+      <BasicInfo alphaVantageData={alphaVantageData} />
+      <p className="mx-2 font-medium text-blue-500 text-opacity-90">Estimates</p>
+      <div id="graph" className="flex flex-col md:flex-row">
+        <div className="mx-2 mb-4 w-full bg-slate-50  dark:bg-gray-700 dark:text-slate-200 md:w-1/2">
+          <GraphRevenueEarnings financialData={financialData} />
+        </div>
+        <div className="mx-2 mb-4 w-full bg-slate-50  dark:bg-gray-700 dark:text-slate-200 md:w-1/2">
+          <GraphConsensusEPS financialData={financialData} />
+        </div>
+      </div>
+      <span className="mb-2 flex flex-col md:flex-row md:items-center">
+        <p className="mx-2 font-medium text-blue-500 text-opacity-90">Transcripts</p>
+        <select
+          data-test-id="transcript-select"
+          className=" mx-2 w-[240px] overflow-y-hidden border border-gray-400 outline-none focus:border-blue-500 dark:bg-gray-600 dark:text-slate-200"
+          onChange={(e) => {
+            const selectedId = e.target.value
+            const selectedData = earningsData.find((data) => data.id === selectedId)
+            setSelectedTranscript(selectedData || null)
+          }}
+        >
+          <option value={selectedTranscript?.id}>
+            {selectedTranscript?.heading.split(',')[1]}
+          </option>
+          {earningsData
+            .filter((data) => data.id !== selectedTranscript?.id)
+            .map((data, idx) => (
+              <option key={data.id} value={data.id}>
+                {data.heading.split(',')[1]}
+              </option>
+            ))}
+        </select>
+      </span>
+      <div className="flex flex-col md:flex-row">
+        <div className="mx-2 mb-4 h-[300px] w-full overflow-y-auto bg-slate-50 dark:bg-gray-700 dark:text-slate-200 md:h-[600px] md:w-1/2">
+          {selectedTranscript?.content ? (
+            <div className="overflow-y-autop-4 cursor-text p-2">
+              <MarkdownRenderer markdownContent={selectedTranscript.content} />
             </div>
-          </span>
-          <span className="flex flex-row items-baseline gap-2">
-            <p className="text-2xl">$177.87</p>
-            <p className="text-sm text-red-500">-0.22 (-0.12%)</p>
-            <p className="text-[10px] text-slate-500">4:00 PM 08/10/23</p>
-          </span>
+          ) : null}
         </div>
-        <TranscriptList
-          data={earningsData}
-          selectedItem={selectedTranscript?.parent_transcript_id}
-          onSelect={handleSelectedTranscript}
-        />
-      </WorkSpace>
-      <WorkSpace>
-        <div className="h-1/2 w-2/3 overflow-y-hidden">
-          <GraphRevenueEarnings financialData={dataAMD} />
+        <div className="mx-2 mb-4 h-[300px] w-full overflow-y-auto bg-slate-50  dark:bg-gray-700  dark:text-slate-200 md:h-[600px] md:w-1/2 ">
+          <div className="overflow-y-autop-4 cursor-text">
+            <Brief transcriptId={selectedTranscript?.parent_transcript_id} />
+          </div>
         </div>
-        <div className="h-1/2 w-2/3 overflow-y-hidden">
-          <GraphConsensusEPS financialData={dataAMD} />
-          {/* <p>Revenue & Expenses Breakdown</p>
-          <p>Multiples</p>
-          <p>Actuals & Forward Estimates</p> */}
+      </div>
+      <div className="flex flex-row">
+        <div className="mx-2 mb-4 w-full bg-slate-50 dark:bg-gray-700 dark:text-slate-200">
+          <AddComparison onSelect={handleSelectQueryStock} />
+          <p className="mx-2 font-semibold text-blue-500 text-opacity-90">Enter your question 👇</p>
+          <UserAsking queryList={semanticQueryList} />
         </div>
-      </WorkSpace>
+      </div>
     </>
   )
 }

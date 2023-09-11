@@ -16,7 +16,6 @@ export async function openaiEmbedding(content: string) {
       throw new Error(`${response.statusText}`)
     }
     const responseData = await response.json()
-    console.log('openai-embeddings-api: ', responseData.model)
     const embeddings = responseData.data[0].embedding
     const tokenUsage: string = responseData.usage.total_tokens
 

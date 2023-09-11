@@ -31,7 +31,7 @@ export const insertTranscriptSections = async (
       .select()
       .limit(1)
       .single()
-    console.log('supabase: ', status, statusText)
+
     if (insertTranscriptSectionError) {
       throw insertTranscriptSectionError
     }

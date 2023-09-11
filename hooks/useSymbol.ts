@@ -52,7 +52,18 @@ export const useSymbol = () => {
       }
     }
     fetchSymbolData()
-  }, [])
+  }, [supabase])
 
-  return { data, error, isLoading }
+  const stockSearch = (query: string) => {
+    const results = []
+    const compnayMap = data?.hashMap
+    for (const symbol in compnayMap) {
+      if (query !== '' && symbol.startsWith(query)) {
+        results.push({ symbol, company_name: compnayMap[symbol] })
+      }
+    }
+    return results
+  }
+
+  return { data, error, isLoading, stockSearch }
 }

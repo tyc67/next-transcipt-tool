@@ -1,6 +1,6 @@
 'use client'
 
-import WorkSpace from "@/components/Workspace"
+import WorkSpace from '@/components/Workspace'
 
 export default function Container() {
   return (

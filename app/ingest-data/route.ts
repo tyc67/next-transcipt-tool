@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { UserError } from '@/lib/errors'
 import generateEmbeddings from '@/lib/generate-embeddings'
 
-// https://nextjs.org/docs/app/building-your-application/routing/router-handlers
 export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json()

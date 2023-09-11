@@ -6,8 +6,6 @@ export const useAskAi = () => {
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  // should i combine useAskAi and useQuestion hooks?
-
   const fetchQuestionAnswer = useCallback(async (query: VectorSearchRequest) => {
     try {
       setIsLoading(true)

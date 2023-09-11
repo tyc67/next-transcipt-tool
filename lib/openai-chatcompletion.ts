@@ -16,7 +16,7 @@ export async function openaiChatCompletion(message: string) {
             role: 'system',
             content: `You are a helpful AI assistant. Given the following sections, answer the question using only that information,
           outputted in markdown format. If you are unsure and the answer is not explicitly written in the given context,
-          say "Sorry, I don't know how to answer questions that are related to the context.."`,
+          say "Apologies, I can't respond to context-related questions. Please try different keywords."`,
           },
           { role: 'user', content: message },
         ],
@@ -27,7 +27,6 @@ export async function openaiChatCompletion(message: string) {
       throw new Error(`${response.status} ${response.statusText}`)
     }
     const responseData = await response.json()
-    console.log('openai-chat-api: ', responseData)
     const openaiResponse = responseData.choices[0].message.content
 
     return openaiResponse
@@ -44,22 +43,16 @@ export async function openaiChatCompletion(message: string) {
         }
       )
     } else if (err instanceof ApplicationError) {
-      // Print out application errors with their additional data
-      console.error(`${err.message}: ${JSON.stringify(err.data)}`)
-    } else {
-      // Print out unexpected errors as is to help with debugging
-      console.error(err)
+      return new Response(
+        JSON.stringify({
+          error: err.message,
+          data: err.data,
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
     }
-
-    // TODO: include more response info in debug environments
-    return new Response(
-      JSON.stringify({
-        error: 'There was an error processing your request',
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
   }
 }

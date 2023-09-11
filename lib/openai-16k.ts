@@ -9,8 +9,6 @@ export interface Request16K {
 
 export async function openai16k(req: Request16K) {
   try {
-    console.log('16k-api-req: ', req)
-
     const question = req.question
     const context = req.context
 
@@ -25,11 +23,9 @@ export async function openai16k(req: Request16K) {
     Answer as markdown:`
 
     const openaiAnswer: string = await openaiChatCompletion(prompt)
-    console.log('16k-api-res: ', openaiAnswer)
 
     return { question, openaiAnswer }
   } catch (err: any) {
-    console.log(err)
     throw new UserError(err)
   }
 }

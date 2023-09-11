@@ -7,7 +7,6 @@ export type WalkEntry = {
 }
 
 export async function walk(resourceId: string, parentPath?: string): Promise<WalkEntry[]> {
-  console.log(`walk-docs: go through ${resourceId}`)
   const immediateFiles = await readdir(resourceId)
   const recursiveFiles = await Promise.all(
     immediateFiles.map(async (file) => {
@@ -28,7 +27,6 @@ export async function walk(resourceId: string, parentPath?: string): Promise<Wal
     })
   )
 
-  // reduce method ?
   const flattenFiles = recursiveFiles.reduce(
     (all, folderContents) => all.concat(folderContents),
     []

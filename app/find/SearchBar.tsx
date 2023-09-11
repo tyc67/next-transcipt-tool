@@ -1,55 +1,64 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { useSymbol, type Company } from '@/hooks/useSymbol'
 import SearchInput from '@/components/ui/SearchInput'
 import StockMenu from '@/components/ui/StockMenu'
+import localforage from 'localforage'
 
-export default function SearchBar() {
-  const pathname = usePathname()
-  const router = useRouter()
+interface SearchBarProps {
+  onSelect: (item: string) => void
+}
+
+export default function SearchBar({ onSelect }: SearchBarProps) {
   const [searchInput, setSearchInput] = useState<string>('')
-  const [searchResult, setSearchResult] = useState<Company[]>([])
-  const [isDropDown, setIsDropdown] = useState<boolean>(false)
-  const { data: stockData, error, isLoading } = useSymbol()
-
-  const handleSelect = (item: string) => {
-    router.push(`${pathname}/${item}`)
-  }
+  const [resultItems, setResultItems] = useState<Company[]>([])
+  const [isDropDownOpen, setIsDropdownOpen] = useState<boolean>(false)
+  const [isRecentOpen, setIsRecentOpen] = useState<boolean>(false)
+  const { stockSearch } = useSymbol()
 
   const handleSearch = (query: string) => {
-    setIsDropdown(true)
+    setIsRecentOpen(false)
+    setIsDropdownOpen(true)
     const transformedQuery = query.trim().replace(/\s/g, '').toUpperCase()
     setSearchInput(transformedQuery)
-
-    const results = []
-    const stockSymbolMap = stockData?.hashMap
-    for (const symbol in stockSymbolMap) {
-      if (symbol.startsWith(transformedQuery)) {
-        results.push({ symbol, company_name: stockSymbolMap[symbol] })
-      }
-    }
-    results.sort((a, b) => a.symbol.localeCompare(b.symbol))
-    setSearchResult(results)
+    const result = stockSearch(transformedQuery)
+    setResultItems(result)
   }
-  // console.log({ isLoading })
-  // console.log(stockData)
-  // console.log({ searchInput }, { searchResult })
+  const onFocus = async () => {
+    try {
+      const recentSymbols = (await localforage.getItem('recent-search')) as string[]
+      const recentSearchItems = recentSymbols.reduce((acc, item) => {
+        const answer = stockSearch(item)
+        return acc.concat(answer)
+      }, [] as Company[])
 
+      setIsDropdownOpen(true)
+      setResultItems(recentSearchItems)
+      setIsRecentOpen(true)
+    } catch (err: any) {
+      throw new Error(err)
+    }
+  }
+  const onBlur = () => {
+    setIsDropdownOpen(false)
+  }
   return (
-    <>
+    <div data-test-id="search-container" className="relative">
       <SearchInput
         value={searchInput}
         placeholder={'search any stock...'}
         onChange={(value) => handleSearch(value)}
+        onFocus={onFocus}
       />
-      {isDropDown && searchResult.length !== 0 ? (
-        <div className="w-full overflow-y-auto border border-solid border-indigo-300">
-          <StockMenu items={searchResult} onSelect={handleSelect} />
+      {isDropDownOpen && resultItems.length !== 0 ? (
+        <div className="absolute max-h-[300px] w-full overflow-y-auto border border-blue-500">
+          {isRecentOpen ? (
+            <p className="bg-gray-200 px-3 py-1 text-[10px]">Recent Searches</p>
+          ) : null}
+          <StockMenu items={resultItems} subitem={true} onSelect={onSelect} onBlur={onBlur} />
         </div>
       ) : null}
-    </>
+    </div>
   )
 }

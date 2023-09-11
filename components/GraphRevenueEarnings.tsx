@@ -1,30 +1,25 @@
-import BarchartTest, { type BarChartTestProps } from './ui/BarChartTest'
 import { useState } from 'react'
-
-export interface financialData {
-  annual: { period: string; revenue: number; earning: number }[]
-  quarterly: { period: string; revenue: number; earning: number }[]
-  eps: { period: string; actual: number | null; estimate: number }[]
-}
+import BarchartTest, { type BarChartTestProps } from './ui/BarChartTest'
+import { type GraphData } from '@/lib/getFinancialData'
 
 interface GraphRevenueEarningsProps {
-  financialData: financialData
+  financialData: GraphData
 }
 
 export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarningsProps) {
-  const [graphData, setGraphData] = useState<BarChartTestProps['chartData'] | undefined>(
+  const [barchartData, setBarchartData] = useState<BarChartTestProps['chartData'] | undefined>(
     financialData.annual
   )
-  const [graphTitle, setGraphTitle] = useState<string | null>('annual')
+  const [barchartTitle, setBarchartTitle] = useState<string | null>('annual')
 
   const handleSelectAnnual = () => {
-    setGraphData(financialData.annual)
-    setGraphTitle('annual')
+    setBarchartData(financialData.annual)
+    setBarchartTitle('annual')
   }
 
   const handleSelectQuarterly = () => {
-    setGraphData(financialData.quarterly)
-    setGraphTitle('quarterly')
+    setBarchartData(financialData.quarterly)
+    setBarchartTitle('quarterly')
   }
 
   return (
@@ -32,7 +27,9 @@ export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarn
       <span className="flex flex-row items-center gap-2 p-1">
         <div
           className={`cursor-pointer border-b-2 text-xs ${
-            graphTitle === 'annual' ? 'border-gray-500' : 'border-transparent hover:border-gray-300'
+            barchartTitle === 'annual'
+              ? 'border-gray-500'
+              : 'border-transparent hover:border-gray-300'
           }`}
           onClick={() => handleSelectAnnual()}
         >
@@ -40,7 +37,7 @@ export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarn
         </div>
         <div
           className={`cursor-pointer border-b-2 text-xs ${
-            graphTitle === 'quarterly'
+            barchartTitle === 'quarterly'
               ? 'border-gray-500'
               : 'border-transparent hover:border-gray-300'
           }`}
@@ -77,7 +74,7 @@ export default function GraphRevenueEarnings({ financialData }: GraphRevenueEarn
           <p className="text-xs">Earnings</p>
         </div>
       </span>
-      <BarchartTest chartData={graphData} containerWidth={600} containerHeight={400} />
+      <BarchartTest chartData={barchartData} containerWidth={600} containerHeight={400} />
     </>
   )
 }

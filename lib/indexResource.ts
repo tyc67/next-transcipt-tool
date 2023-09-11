@@ -106,7 +106,6 @@ export function processMdForSearch(content: string): ProcessedMd {
   }
 }
 
-// need to adjust filePath setting....
 export class MarkdownSource extends BaseSource {
   type = 'markdown' as const
 
@@ -144,7 +143,6 @@ const Constants = {
   },
 }
 
-// fetch sources to index for search, why docs can't work but app/docs can.
 export async function fetchResources() {
   const guideResources = (await walk(Constants.resources.transcripts)).map(
     (entry) => new MarkdownSource('docs', entry.path)

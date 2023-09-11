@@ -1,8 +1,8 @@
-import { type financialData } from './GraphRevenueEarnings'
 import { useState } from 'react'
+import { type GraphData } from '@/lib/getFinancialData'
 
 interface GraphConsensuEPSProps {
-  financialData: financialData
+  financialData: GraphData
 }
 
 export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSProps) {
@@ -17,10 +17,14 @@ export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSPro
   const axisWidth = 1
   const labelFontSize = 14
   const labelColor = '#a1a1aa'
-  const labelX = financialData.eps.map((data) => data.period)
+  const labelX = financialData.quarterly.map((data) => data.period)
   const axis_x_count = labelX.length
-  const dataActual = financialData.eps.map((data) => data.actual)
-  const dataEstimate = financialData.eps.map((data) => data.estimate)
+  const dataActual = financialData.quarterly
+    .map((data) => data.eps_actual)
+    .filter((value) => value !== null) as number[]
+  const dataEstimate = financialData.quarterly
+    .map((data) => data.eps_estimate)
+    .filter((value) => value !== null) as number[]
 
   const [dotPosition, setDotPosition] = useState({
     id: null,
@@ -29,15 +33,15 @@ export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSPro
     isHovering: false,
   })
 
-  const dataActualWithoutNull = dataActual.filter((value) => value !== null) as number[]
+  const maxActual = Math.ceil(Math.max(...dataActual))
+  const maxEstimate = Math.ceil(Math.max(...dataEstimate))
 
-  const scaledDataActual = dataActualWithoutNull.map(
-    (value) => value * (containerHeight - margin.top - margin.bottom)
+  const scaledDataActual = dataActual.map(
+    (value) => (value / maxActual) * (containerHeight - margin.top - margin.bottom)
   )
   const scaledDataEstimate = dataEstimate.map(
-    (value) => value * (containerHeight - margin.top - margin.bottom)
+    (value) => (value / maxEstimate) * (containerHeight - margin.top - margin.bottom)
   )
-  // console.log({ scaledDataActual }, { scaledDataEstimate })
 
   const handleMouseOver = (e: any) => {
     const { id } = e.target
@@ -160,7 +164,7 @@ export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSPro
         </div>
       </span>
 
-      <svg className=" bg-slate-50" viewBox={`0 0 ${containerWidth} ${containerHeight}`}>
+      <svg className="bg-transparent" viewBox={`0 0 ${containerWidth} ${containerHeight}`}>
         <g key="x-axis">
           <path
             d={`M${margin.left},${containerHeight - margin.bottom} L${
@@ -208,8 +212,9 @@ export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSPro
           const y = containerHeight - data - margin.bottom
           const offset = 10
           return (
-            <g key={`estimate-${idx}`}>
+            <g key={`actual-${idx}`}>
               <circle
+                id={`actual-${idx}`}
                 className="opacity-75"
                 cx={x + offset}
                 cy={y}
@@ -217,7 +222,20 @@ export default function GraphConsensusEPS({ financialData }: GraphConsensuEPSPro
                 stroke={dotColor2}
                 strokeWidth="0"
                 fill={dotColor2}
+                onMouseOver={handleMouseOver}
+                onMouseLeave={handleMouseLeave}
               />
+              {dotPosition.isHovering && dotPosition.id === `actual-${idx}` && (
+                <>
+                  <path
+                    d={drawDashLine(x, y, offset)}
+                    stroke={labelColor}
+                    strokeWidth="1"
+                    strokeDasharray={7}
+                  />
+                  {drawSquare(x, y, offset, idx)}
+                </>
+              )}
             </g>
           )
         })}
