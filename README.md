@@ -19,28 +19,54 @@ This application is a cutting-edge financial information platform powered by art
 - **Deployment:** Vercel
 - **Code Quality:** ESLint, Prettier
 
-## Roadmap
-- Improve data visualization with interactive charts.
-- Add support for more languages with internationalization.
-- Implement machine learning for predictive analytics.
-- Implement user notifications for real-time updates.
-
 ## Getting Started
 
-First, run the development server:
+### Setting Up Environment Variables Locally
+you'll need to set up environment variables for various configurations. 
+Follow these steps:
 
+1. Create a `.env.local` file in the root directory of your project if it doesn't already exist.
+2. Add your environment variables to this file in the following format, replacing `API_KEY`, `SECRET_KEY`, and other variable names as needed:
+
+   ```env
+   # Supabase Config
+   NEXT_PUBLIC_SUPABASE_URL=
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=
+   SUPABASE_SERVICE_ROLE_KEY=
+
+   # Get service key 
+   OPENAI_KEY=
+   ALPHA_VANTAGE_KEY=
+
+   # Providers
+   GOOGLE_CLIENT_ID=
+   GOOGLE_CLIENT_SECRET=
+   GITHUB_CLIENT_ID=
+   GITHUB_CLIENT_SECRET=
+
+   # NextAuth Config
+   NEXTAUTH_SECRET=
+   NEXTAUTH_URL=
+   
+3. Make sure to add `.env.local` to your `.gitignore` file to prevent accidentally committing sensitive information to your version control system.
+Once you've set up the environment variables, you can run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ### Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To deploy your project on Vercel, follow these steps:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. [Create a Vercel account](https://vercel.com/) if you don't have one, or log in if you already do.
+2. Click the "Add New Project" button, and "import" your project's repository from GitHub.
+3. Configure deployment settings, including environment variables if needed.
+4. Deploy your project.
+
+## Roadmap
+- Improve data visualization with interactive charts.
+- Add support for more languages with internationalization.
+- Implement machine learning for predictive analytics.
+- Implement user notifications for real-time updates.
