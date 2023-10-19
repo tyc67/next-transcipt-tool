@@ -8,6 +8,14 @@ This application is a cutting-edge financial information platform powered by art
 - Integrates [OpenAI API](https://platform.openai.com/docs/api-reference) for advanced AI capabilities.
 - Utilizes [Supabase](https://supabase.com/) for scalable database management.
 
+## Demo
+
+
+https://github.com/tyc67/next-transcipt-tool/assets/114332515/9f99ffd4-e3d4-414c-9b3b-b61b34453e98
+
+
+
+
 ## Technologies and Tools
 - **Frontend:** Next.js, React, Tailwind CSS, heroicons
 - **Backend:** Node.js
