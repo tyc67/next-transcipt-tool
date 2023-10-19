@@ -2,15 +2,15 @@
 # next transcript tool
 This application is a cutting-edge financial information platform powered by artificial intelligence. It delivers in-depth financial analysis and valuable insights, harnessing the power of earnings call transcripts. By examining these transcripts, it aids users in evaluating the fundamental risks and trends associated with companies. Furthermore, users have the ability to create their own inquiries and glean insights from meeting records.
 
+## Demo
+
+https://github.com/tyc67/next-transcipt-tool/assets/114332515/d8178b12-db2a-4b7e-a0a3-edaf768c6964
+
 ## Features
 - User authentication via Google and GitHub OAuth.
 - Built with [Next.js](https://nextjs.org/) and React, styled with [Tailwind CSS](https://tailwindcss.com/) for a responsive UI.
 - Integrates [OpenAI API](https://platform.openai.com/docs/api-reference) for advanced AI capabilities.
 - Utilizes [Supabase](https://supabase.com/) for scalable database management.
-
-## Demo
-
-https://github.com/tyc67/next-transcipt-tool/assets/114332515/d8178b12-db2a-4b7e-a0a3-edaf768c6964
 
 ## Technologies and Tools
 - **Frontend:** Next.js, React, Tailwind CSS, heroicons
