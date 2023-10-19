@@ -10,11 +10,7 @@ This application is a cutting-edge financial information platform powered by art
 
 ## Demo
 
-
-https://github.com/tyc67/next-transcipt-tool/assets/114332515/9f99ffd4-e3d4-414c-9b3b-b61b34453e98
-
-
-
+https://github.com/tyc67/next-transcipt-tool/assets/114332515/d8178b12-db2a-4b7e-a0a3-edaf768c6964
 
 ## Technologies and Tools
 - **Frontend:** Next.js, React, Tailwind CSS, heroicons
